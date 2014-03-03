@@ -79,6 +79,8 @@ TodoDodayView = Backbone.View.extend({
   //destroy me 
   deleteModel: function(event){
     event.preventDefault()
+    console.log('backbone datas :' + JSON.stringify(this.model))
+    console.log('Backbone cid /Will be userid as record id if does not exist :' + this.model.cid)
     this.model.destroy()
 
   },
@@ -111,6 +113,10 @@ TodoDodayView = Backbone.View.extend({
     //Bind model
     this.model.fetch()
     this.model.bind("all", this.render, this)
+    this.model.bind("add" ,function(record){
+      console.log('record datas  :' + JSON.stringify(record))
+	console.log('record to add :' + record.cid)
+    })
     this.render()
   }
   ,
