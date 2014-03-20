@@ -1,10 +1,17 @@
 
+//Fake store
+function _Html5_store(model){
+  if(localStorage !== "undefined"){
+    localStorage.setItem("data",JSON.stringify(model))
+  }
+}
+
 //Datas to Work with
 var datas =[
   {do :'Tester mon application' , time: '7h', done:'false'},
-  {do :'Alleter bebe' , time: '8h', done:false},
+  {do :'Allaiter bebe' , time: '8h', done:false},
   {do :'Aller travailler', time: '8h 30', done:'false'},
-  {do :'Prendre une pose cafe', time: '8h 50', done:'false'}
+  {do :'Prendre une pause cafe', time: '8h 50', done:'false'}
 ]
 
 
@@ -28,8 +35,15 @@ TodoDodayCollection = Backbone.Collection.extend({
      return this.length || 0 
   },
   fetch: function(){
-      self =this
-    _.each(datas, function(data){
+    self =this
+    if((localStorage !== "undefined") && localStorage.getItem("data")){
+      ds =JSON.parse(localStorage.getItem("data"))
+	console.log("fetch data from localstorage" + ds)
+    } else{
+    	ds = datas
+      console.log("fetch data from local variable data" + ds)
+    }
+    _.each(ds, function(data){
       self.add(new ToDoToDay(data))
      })
   }
@@ -80,7 +94,7 @@ TodoDodayView = Backbone.View.extend({
   deleteModel: function(event){
     event.preventDefault()
     console.log('backbone datas :' + JSON.stringify(this.model))
-    console.log('Backbone cid /Will be userid as record id if does not exist :' + this.model.cid)
+    console.log('Backbone cid /Will be used as record id if does not exist :' + this.model.cid)
     this.model.destroy()
 
   },
@@ -138,13 +152,16 @@ TodoDodayView = Backbone.View.extend({
   // This method allow you to add each element to the collection
   addOneModel: function(event){
     event.preventDefault()
-    this.model.add({do: this.$el.find("#do").val(), time: this.$el.find("#time").val()}) 
+    this.model.add({do: this.$el.find("#do").val(), time: this.$el.find("#time").val()})
+    _Html5_store(this.model)
   },
 
   //destroy collection
   delAllModel:function(event){
     event.preventDefault()
     this.model.reset()
+    _Html5_store(this.model)
+
   },
 
   //Update One element of the collection
